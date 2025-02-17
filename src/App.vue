@@ -1,5 +1,5 @@
 <script setup>
-import Tree from "./components/Tree.vue"
+import Tree from "./components/Upload.vue"
 </script>
 
 <template>

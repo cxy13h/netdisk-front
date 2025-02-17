@@ -1,50 +1,92 @@
 <template>
-  <el-tree-v2
-      style="max-width: 600px"
-      :data="data"
-      :props="props"
-      :height="208"
-  />
+  <div class="custom-tree-container">
+    <el-tree
+        style="max-width: 600px"
+        :data="dataSource"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :expand-on-click-node="false"
+    >
+      <template #default="{ node, data }">
+        <span class="custom-tree-node">
+          <span>{{ node.label }}</span>
+          <span>
+            <a @click="append(data)"> Append </a>
+            <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a>
+          </span>
+        </span>
+      </template>
+    </el-tree>
+  </div>
 </template>
+
 <script lang="ts" setup>
+import { ref } from 'vue'
+import type Node from 'element-plus/es/components/tree/src/model/node'
+
 interface Tree {
-  id: string
+  id: number
+  type: string
   label: string
   children?: Tree[]
 }
+let id = 1000
 
-const getKey = (prefix: string, id: number) => {
-  return `${prefix}-${id}`
+const append = (data: Tree) => {
+  console.log(data)
 }
 
-const createData = (
-    maxDeep: number,
-    maxChildren: number,
-    minNodesNumber: number,
-    deep = 1,
-    key = 'node'
-): Tree[] => {
-  let id = 0
-  return Array.from({ length: minNodesNumber })
-      .fill(deep)
-      .map(() => {
-        const childrenNumber =
-            deep === maxDeep ? 0 : Math.round(Math.random() * maxChildren)
-        const nodeKey = getKey(key, ++id)
-        return {
-          id: nodeKey,
-          label: nodeKey,
-          children: childrenNumber
-              ? createData(maxDeep, maxChildren, childrenNumber, deep + 1, nodeKey)
-              : undefined,
-        }
-      })
+const remove = (node: Node, data: Tree) => {
+  console.log(data)
+
+  console.log(node)
 }
 
-const props = {
-  value: 'id',
-  label: 'label',
-  children: 'children',
-}
-const data = createData(4, 30, 40)
+
+const dataSource = ref<Tree[]>([
+  {
+    id: 2,
+    type: "directory",
+    label: "一级目录-1",
+    children: [
+      {
+        id: 4,
+        type: "directory",
+        label: "二级目录-1",
+        children: [
+          {
+            id: 5,
+            type: "directory",
+            label: "三级目录-1",
+            children: []
+          },
+          {
+            id: 3,
+            type: "file",
+            label: "文件3",
+            children: null
+          }
+        ]
+      },
+      {
+        id: 1,
+        type: "file",
+        label: "文件1",
+        children: null
+      }
+    ]
+  }
+])
 </script>
+
+<style>
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
+</style>

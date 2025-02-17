@@ -18,6 +18,15 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  server: {
+    proxy: {
+      '/netdiskFile': {
+        target: 'http://localhost:8080', // 后端服务地址
+        changeOrigin: true,             // 支持跨域
+        rewrite: (path) => path.replace(/^\/netdiskFile/, '/netdiskFile') // 可选：路径重写
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
